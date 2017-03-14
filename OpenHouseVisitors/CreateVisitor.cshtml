@@ -1,0 +1,264 @@
+﻿@model Sabio.Web.Models.ViewModels.ItemViewModel<int>
+@{
+    ViewBag.Title = "CreateVisitor";
+    Layout = "~/Views/Shared/_LayoutSmarty.cshtml";
+}
+
+<head>
+    <link href="~/Content/sweetalert2.css" rel="stylesheet" />
+</head>
+
+<section class="page-header page-header-xs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb-inverse">
+            <li><a href="#">Home</a></li>
+            <li><a href="/OpenHouses/">List of Open Houses</a></li>
+            <li class="active">Open House Settings</li>
+        </ol>
+    </div>
+</section>
+
+<section ng-controller="openHouseVisitorsController as OHVCtrl">
+    <div class="container">
+        <div class="col-md-8 col-sm-7">
+
+            <div class="box-static box-transparent box-bordered padding-30">
+
+                <div class="box-title margin-bottom-30">
+                    <h2 class="size-20 text-center">Thank you for visiting:</h2>
+                    <h2 class="text-center"><span>{{OHVCtrl.item.streetAddress}}</span></h2>
+                    <h4 class="text-center">Please sign in.</h4>
+                </div>
+
+                <form name="visitorForm" ng-submit="OHVCtrl.submitForm(visitorForm.$valid)" class="nomargin sky-form" action="#" method="post" enctype="multipart/form-data" novalidate>
+                    <fieldset>
+
+                        <div class="row">
+                            <div class="form-group">
+
+                                <div class="col-md-6 col-sm-6" ng-class="{'has-error' : visitorForm.firstName.$invalid && !visitorForm.firstName.$pristine }">
+                                    <label>First Name *</label>
+                                    <label class="input margin-bottom-10">
+                                        <i class="ico-append fa fa-user"></i>
+                                        <input required="" type="text" name="firstName" ng-model="OHVCtrl.data.firstName" ng-minlength="2" ng-maxlength="50">
+                                    </label>
+                                    <p ng-show="visitorForm.firstName.$error.minlength && !visitorForm.firstName.$untouched" class="help-block error">First name is too short</p>
+                                    <p ng-show="visitorForm.firstName.$error.maxlength && !visitorForm.firstName.$untouched" class="help-block error">First name is too long.</p>
+                                </div>
+
+                                <div class="col-md-6 col-sm-6" ng-class="{'has-error' : visitorForm.lastName.$invalid && !visitorForm.lastName.$pristine }">
+                                    <label for="register:last_name">Last Name *</label>
+                                    <label class="input margin-bottom-10">
+                                        <i class="ico-append fa fa-user"></i>
+                                        <input required="" type="text" name="lastName" ng-model="OHVCtrl.data.lastName" ng-minlength="2" ng-maxlength="50">
+                                    </label>
+                                    <p ng-show="visitorForm.lastName.$error.minlength && !visitorForm.lastName.$untouched" class="help-block">Last name is too short</p>
+                                    <p ng-show="visitorForm.lastName.$error.maxlength && !visitorForm.lastName.$untouched" class="help-block">Last name is too long.</p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+
+                                <div class="col-md-6 col-sm-6" ng-class="{'has-error' : visitorForm.email.$invalid && !visitorForm.email.$pristine }">
+                                    <label for="register:email">Email *</label>
+                                    <label class="input margin-bottom-10">
+                                        <i class="ico-append fa fa-envelope"></i>
+                                        <input required="" type="email" name="email" ng-model="OHVCtrl.data.email" ng-minlength="6" ng-maxlength="100">
+                                    </label>
+                                    <p ng-show="visitorForm.email.$error.minlength && !visitorForm.email.$untouched" class="help-block">Email is too short</p>
+                                    <p ng-show="visitorForm.email.$error.maxlength && !visitorForm.email.$untouched" class="help-block">Email is too long.</p>
+                                    <p ng-show="visitorForm.email.$error.email && !visitorForm.email.$untouched" class="help-block">Please enter a valid email.</p>
+                                </div>
+
+                                <div class="col-md-6 col-sm-6" ng-class="{'has-error' : visitorForm.phoneNumber.$invalid && !visitorForm.phoneNumber.$pristine }">
+                                    <label for="register:phone">Phone *</label>
+                                    <label class="input margin-bottom-10">
+                                        <i class="ico-append fa fa-phone"></i>
+                                        <input required="" type="text" name="phoneNumber" ng-model="OHVCtrl.data.phoneNumber" ng-minlength="10" ng-maxlength="10">
+                                        <b class="tooltip tooltip-bottom-right">Numbers only please</b>
+                                    </label>
+                                    <p ng-show="visitorForm.phoneNumber.$error.minlength && !visitorForm.phoneNumber.$untouched" class="help-block">Phone number must be 10 digits.</p>
+                                    <p ng-show="visitorForm.phoneNumber.$error.maxlength && !visitorForm.phoneNumber.$untouched" class="help-block">Phone number should only be 10 digits.</p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <label class="checkbox nomargin"><input type="checkbox" name="checkbox" ng-model="OHVCtrl.data.lookingForAgent"><i></i>Are you looking for an agent to help with your search?</label>
+                        <label class="checkbox nomargin"><input type="checkbox" name="checkbox" ng-model="OHVCtrl.data.wantsUpdates"><i></i>Would you like to recieve updates about this property?</label>
+                        <label class="checkbox nomargin"><input type="checkbox" name="checkbox" ng-model="OHVCtrl.data.sendSimilar"><i></i>Would you like {{OHVCtrl.item.agentFirstName}} {{OHVCtrl.item.agentLastName}} to send you listings similar to this one?</label>
+                    </fieldset>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary" ng-disabled="visitorForm.$invalid"><i class="fa fa-check"></i> SIGN IN </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+@*<footer id="footer" class="sticky">
+    <div class="container">
+        <div class="row">
+    <div class="thumbnail text-center col-md-3">
+        <img src="assets/images/demo/people/460x700/8-min.jpg" alt="" />
+        <h2 class="size-18 margin-top-10 margin-bottom-0">Felica Doe</h2>
+        <h3 class="size-11 margin-top-0 margin-bottom-10 text-muted">DEVELOPER</h3>
+    </div>
+
+    <ul class="side-nav list-group col-md-3" id="sidebar-nav">
+        <li class="list-group-item active"><a href="page-profile.html"><i class="fa fa-eye"></i> PROFILE</a></li>
+        <li class="list-group-item"><a href="page-profile-projects.html"><i class="fa fa-tasks"></i> PROJECTS</a></li>
+        <li class="list-group-item"><a href="page-profile-comments.html"><i class="fa fa-comments-o"></i> COMMENTS</a></li>
+        <li class="list-group-item"><a href="page-profile-history.html"><i class="fa fa-history"></i> HISTORY</a></li>
+        <li class="list-group-item"><a href="page-profile-settings.html"><i class="fa fa-gears"></i> SETTINGS</a></li>
+    </ul>
+            </div>
+</div>
+</footer>*@
+
+
+@section scripts{
+<script src="~/Scripts/sabio.services.openHouse.js"></script>
+    <script src="~/Scripts/sweetalert2.js"></script>
+
+    <script>
+
+        //service factory - open house
+        (function () {
+            sabio.page.currentId = @Html.RawJson(Model.Item);
+            "use strict";
+            angular.module(APPNAME).factory('openHouseService', OpenHouseServiceFactory);
+            OpenHouseServiceFactory.$inject = ['$baseService', '$sabio'];
+            function OpenHouseServiceFactory($baseService, $sabio) {
+                var aSabioServiceObject = sabio.services.openHouse;
+                var newService = $baseService.merge(true, {}, aSabioServiceObject, $baseService);
+                console.log("openHouseService", aSabioServiceObject);
+                return newService;
+            }
+        })();
+
+        //service factory - sweet alert
+        (function () {
+            "use strict";
+            angular.module(APPNAME).factory('sweetAlertService', SweetAlertService);
+            SweetAlertService.$inject = ['$baseService', '$sabio'];
+            function SweetAlertService($baseService, $sabio) {
+                var aSabioServiceObject = sabio.services.sweetalert2;
+                var newService = $baseService.merge(true, {}, aSabioServiceObject, $baseService);
+                console.log("sweetAlertService", aSabioServiceObject);
+                return newService;
+            }
+        })();
+
+        //open house visitors controller
+        (function () {
+            "use strict";
+
+            angular.module(APPNAME).controller('openHouseVisitorsController', OpenHouseVisitorsController);
+
+            OpenHouseVisitorsController.$inject = ['$scope', '$baseController', 'openHouseService', 'sweetAlertService'];
+
+            function OpenHouseVisitorsController($scope, $baseController, openHouseService, sweetAlertService) {
+                var vm = this;
+                $baseController.merge(vm, $baseController);
+                vm.$scope = $scope;
+                vm.openHouseService = openHouseService;
+                vm.sweetAlertService = sweetAlertService;
+                vm.notify = vm.openHouseService.getNotifier($scope);
+
+                vm.myMessage = "Angular is rendering on the page";
+                vm.showVisitorErrors = false;
+                vm.submitForm = _submitForm;
+                vm.data = {};
+                vm.data.openHouseId = sabio.page.currentId;
+                vm.item = {};
+
+                render();
+                function render() {
+                    vm.openHouseService.getOpenHouse(sabio.page.currentId, _onOpenHouseSuccess, _onOpenHouseError);
+                }
+
+                function _onOpenHouseSuccess(data) {
+                    vm.notify(function () {
+                        vm.item = data.item;
+                    });
+                    console.log(data.item);
+                    console.log("got open house");
+                }
+
+                function _onOpenHouseError() {
+                    console.log("could not get open house");
+                }
+
+                function _submitForm(isValid) {
+                    event.preventDefault();
+                    vm.showVisitorErrors = true;
+
+                    if (isValid) {
+                        vm.openHouseService.addVisitor(vm.data, _onPostSuccess, _onPostError);
+                    }
+                    else {
+                        console.log("form submitted with invalid data :(")
+                    }
+
+                    //if(vm.frmVisitor.$valid) {
+                    //    vm.openHouseVisitorsService.Post(vm.data, _onPostSuccess, _onPostError);
+                    //}
+                    //else {
+                    //    console.log("invalid data");
+                    //}
+                }
+
+                function _onPostSuccess(data) {
+                    console.log(data.item);
+                    console.log("posted visitor");
+                    vm.notify(function () {
+                        vm.data = null;
+                        vm.showVisitorErrors = false;
+                    });
+                    swal({
+                        title: 'You\'re signed in!',
+                        text: "Would you like to see property details?",
+                        type: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, please.',
+                        cancelButtonText: 'No, thanks.',
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        buttonsStyling: false
+                    }).then(function () {
+                        window.location.href = "@Model.BaseUrl/properties/" + vm.item.listingId;
+                    }, function (dismiss) {
+                        // dismiss can be 'cancel', 'overlay',
+                        // 'close', and 'timer'
+                        if (dismiss === 'cancel') {
+                            window.location.href = "@Model.BaseUrl";
+                        }
+                    })
+                }
+
+                function _onPostError() {
+                    console.log("could not post visitor");
+                }
+            }
+        })();
+
+
+    </script>
+
+}

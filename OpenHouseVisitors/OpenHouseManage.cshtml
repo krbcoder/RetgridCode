@@ -1,0 +1,498 @@
+﻿@using Sabio.Web.Services
+@model Sabio.Web.Models.ViewModels.ItemViewModel<List<KeyValuePair<string, int>>>
+@{
+    ViewBag.Title = "IndexVisitor";
+    Layout = "~/Views/Shared/_LayoutSmarty.cshtml";
+}
+
+<section class="page-header page-header-xs">
+    <div class="container">
+        <ol class="breadcrumb breadcrumb-inverse">
+            <li><a href="#">Home</a></li>
+            <li><a href="/OpenHouses/">List of Open Houses</a></li>
+            <li class="active">Open House Settings</li>
+        </ol>
+    </div>
+</section>
+
+<section>
+    <div class="container" ng-controller="openHouseController as VCtrl">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-4">
+
+                <div class="thumbnail text-center">
+                    <img ng-src="{{VCtrl.house.defaultMediaURL}}" alt="" />
+                    <h2 class="size-18 margin-top-10 margin-bottom-0">{{VCtrl.house.streetAddress}}</h2>
+                    <h3 class="size-11 margin-top-0 margin-bottom-10 text-muted">{{VCtrl.house.cityName}}</h3>
+                </div>
+                <!-- SIDE NAV -->
+                <ul class="side-nav list-group margin-bottom-60" id="sidebar-nav">
+                    <li class="list-group-item"><a href="#"><i class="fa fa-home"></i> MLS ID: {{VCtrl.house.mlsListingId}}</a></li>
+                    <li class="list-group-item"><a href="#"><i class="fa fa-calendar-check-o"></i> DATE: {{VCtrl.house.openHouseDate | date}}</a></li>
+                    <li class="list-group-item"><a href="#"><i class="fa fa-clock-o"></i> TIME: {{VCtrl.house.openHouseStartTime | formatTime}} - {{VCtrl.house.openHouseEndTime | formatTime}}</a></li>
+                    <li class="list-group-item"><a href="#"><i class="fa fa-user-circle-o"></i> HOST: {{VCtrl.house.agentFirstName}} {{VCtrl.house.agentLastName}}</a></li>
+                </ul>
+                <div class="box-light padding-20 margin-bottom-10">
+                    <div class="margin-left-10 margin-top-10 margin-bottom-20">
+                        <span><img src="http://www.free-qr-code.net/favicon.ico" /></span>
+                        <span class="margin-left-10">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-print"></i>View QR Code</button>
+                        </span>
+                    </div>
+                    <div class="margin-left-10 margin-top-10 margin-bottom-20">
+                        <span><i class="fa fa-file-o"></i></span>
+                        <span class="margin-left-10">
+                            <button type="button" class="btn btn-primary" ng-click="VCtrl.goToFlyer()"><i class="fa fa-print"></i>Print Flyer</button>
+                        </span>
+                    </div>
+                    <div class="margin-left-10 margin-top-10 margin-bottom-20">
+                        <span><i class="fa fa-envelope"></i></span>
+                        <span class="margin-left-10">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2"><i class="fa fa-paper-plane"></i>Send Update</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9 col-md-9 col-sm-8">
+                <div class="box-icon box-icon-center box-icon-round box-icon-transparent box-icon-large box-icon-content">
+                    <div class="box-icon-title">
+                        <i class="fa fa-users"></i>
+                        <div class="panel-heading panel-heading-transparent">
+                            <h2 class="panel-title bold text-center">
+                                <span class="displayActionView">VISITORS</span>
+                            </h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-vertical-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <a href="#" ng-click="VCtrl.sortType = 'lastName'; VCtrl.sortReverse = !VCtrl.sortReverse">
+                                                    <i class="fa fa-user-circle-o"></i> Name
+                                                    <span ng-show="VCtrl.sortType == 'lastName' && !VCtrl.sortReverse" class="fa fa-caret-down"></span>
+                                                    <span ng-show="VCtrl.sortType == 'lastName' && VCtrl.sortReverse" class="fa fa-caret-up"></span>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" ng-click="VCtrl.sortType = 'email' ; VCtrl.sortReverse = !VCtrl.sortReverse">
+                                                    <i class="fa fa-envelope"></i> Email
+                                                    <span ng-show="VCtrl.sortType == 'email' && !VCtrl.sortReverse" class="fa fa-caret-down"></span>
+                                                    <span ng-show="VCtrl.sortType == 'email' && VCtrl.sortReverse" class="fa fa-caret-up"></span>
+                                                </a>
+                                            </th>
+
+                                            <th>
+                                                <a href="#" ng-click="VCtrl.sortType = 'phoneNumber'; VCtrl.sortReverse = !VCtrl.sortReverse">
+                                                    <i class="fa fa-phone"></i> Phone Number
+                                                    <span ng-show="VCtrl.sortType == 'phoneNumber' && !VCtrl.sortReverse" class="fa fa-caret-down"></span>
+                                                    <span ng-show="VCtrl.sortType == 'phoneNumber' && VCtrl.sortReverse" class="fa fa-caret-up"></span>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" ng-click="VCtrl.sortType = 'lookingForAgent'; VCtrl.sortReverse = !VCtrl.sortReverse">
+                                                    <i class="fa fa-check"></i> Agent
+                                                    <span ng-show="VCtrl.sortType == 'lookingForAgent' && !VCtrl.sortReverse" class="fa fa-caret-down"></span>
+                                                    <span ng-show="VCtrl.sortType == 'lookingForAgent' && VCtrl.sortReverse" class="fa fa-caret-up"></span>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" ng-click="VCtrl.sortType = 'wantsUpdates'; VCtrl.sortReverse = !VCtrl.sortReverse">
+                                                    <i class="fa fa-check"></i> Updates
+                                                    <span ng-show="VCtrl.sortType == 'wantsUpdates' && !VCtrl.sortReverse" class="fa fa-caret-down"></span>
+                                                    <span ng-show="VCtrl.sortType == 'wantsUpdates' && VCtrl.sortReverse" class="fa fa-caret-up"></span>
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="#" ng-click="VCtrl.sortType = 'sendSimilar'; VCtrl.sortReverse = !VCtrl.sortReverse">
+                                                    <i class="fa fa-check"></i> Similar Listings
+                                                    <span ng-show="VCtrl.sortType == 'sendSimilar' && !VCtrl.sortReverse" class="fa fa-caret-down"></span>
+                                                    <span ng-show="VCtrl.sortType == 'sendSimilar' && VCtrl.sortReverse" class="fa fa-caret-up"></span>
+                                                </a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="visitor in VCtrl.items | orderBy : VCtrl.sortType : VCtrl.sortReverse | filter: VCtrl.visitorFilter | dateFilter : VCtrl.startDate : VCtrl.endDate">
+                                            <td align="left"><span>{{visitor.firstName}}</span> <span>{{visitor.lastName}}</span></td>
+                                            <td align="left">{{visitor.email}}</td>
+                                            <td>{{visitor.phoneNumber | tel}}</td>
+                                            <td>
+                                                <label class="switch switch-primary switch-round">
+                                                    <input type="checkbox" ng-model="visitor.lookingForAgent" ng-change="VCtrl.edit(visitor)">
+                                                    <span class="switch-label" data-on="YES" data-off="NO"></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label class="switch switch-primary switch-round">
+                                                    <input type="checkbox" ng-model="visitor.wantsUpdates" ng-change="VCtrl.edit(visitor)">
+                                                    <span class="switch-label" data-on="YES" data-off="NO"></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label class="switch switch-primary switch-round">
+                                                    <input type="checkbox" ng-model="visitor.sendSimilar" ng-change="VCtrl.edit(visitor)">
+                                                    <span class="switch-label" data-on="YES" data-off="NO"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">QR Code</h4>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        @Html.GenerateRelayQrCode(Model.BaseUrl + "/openhouses/" + Model.Item[1].Value + "/visitors/create")
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" ng-click="VCtrl.print()"><i class="fa fa-print"></i>PRINT</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div id="myModal2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Send Update</h4>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <form class="validate">
+                            <fieldset>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-md-12 col-sm-12">
+                                            <label>Subject *</label>
+                                            <input type="text" name="subject" value="" class="form-control required" ng-model="VCtrl.subject">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-md-12 col-sm-12">
+                                            <label>Message *</label>
+                                            <textarea name="message" rows="4" class="form-control required" ng-model="VCtrl.message"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="VCtrl.readStatus()"><i class="fa fa-paper-plane"></i>SEND</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+
+    <script src="~/Scripts/sabio.services.openHouse.js"></script>
+
+    <script type="text/javascript">
+
+        (function () {
+            "use strict";
+            sabio.page.agentId = @Html.RawJson(Model.Item[0].Value);
+            sabio.page.openHouseId = @Html.RawJson(Model.Item[1].Value);
+            angular.module(APPNAME).factory('openHouseService', OpenHouseServiceFactory);
+            OpenHouseServiceFactory.$inject = ['$baseService', '$sabio'];
+            function OpenHouseServiceFactory($baseService, $sabio) {
+                var aSabioServiceObject = sabio.services.openHouse;
+                var newService = $baseService.merge(true, {}, aSabioServiceObject, $baseService);
+                console.log("openHouseService", aSabioServiceObject);
+                return newService;
+            }
+        })();
+
+        (function () {
+            "use strict";
+            angular.module(APPNAME).controller('openHouseController', OpenHouseController);
+            OpenHouseController.$inject = ['$scope', '$baseController', 'openHouseService'];
+            function OpenHouseController($scope, $baseController, openHouseService) {
+                var vm = this;
+                $baseController.merge(vm, $baseController);
+                vm.$scope = $scope;
+                vm.openHouseService = openHouseService;
+                vm.notify = vm.openHouseService.getNotifier($scope);
+
+                vm.myMessage = 'Angular is rendering on the page';
+                vm.items = [];
+                vm.house = [];
+                vm.sortType = 'lastName';
+                vm.sortReverse = false;
+                vm.searchVisitor = '';
+                vm.searchDate = '';
+                vm.column = '';
+                vm.visitor = null;
+                vm.filterCategories = ['lastName', 'email', 'streetAddress'];
+                vm.select = {pick: ''};
+                vm.visitorFilter = _visitorFilter;
+                vm.readStatus = _readStatus;
+                vm.edit = _edit;
+                vm.print = _print;
+                vm.goToFlyer = _goToFlyer;
+                vm.subject = '';
+                vm.message = '';
+                vm.email = {};
+
+                render();
+                function render() {
+                    vm.openHouseService.getVisitorsByOpenHouseId (sabio.page.openHouseId, _onGetVisitorsSuccess, _onGetVisitorsError);
+                    vm.openHouseService.getOpenHouse(sabio.page.openHouseId, _onGetOpenHouseSuccess, _onGetOpenHouseError);
+                }
+
+                function _onGetVisitorsSuccess(data) {
+                    vm.notify(function () {
+                        vm.items = data.items;
+                    });
+                    console.log(data.items);
+                    console.log("got visitors");
+                }
+
+                function _onGetVisitorsError() {
+                    console.log("could not get visitors");
+                }
+
+                function _onGetOpenHouseSuccess(data) {
+                    vm.notify(function () {
+                        vm.house = data.item;
+                    });
+                    console.log(data.item);
+                    console.log("got house");
+                }
+
+                function _onGetOpenHouseError() {
+                    console.log("could not get house");
+                }
+
+                function _edit(item) {
+                    vm.openHouseService.editVisitor(item, _onEditSuccess, _onEditError);
+                }
+
+                function _onEditSuccess() {
+                    console.log("updated");
+                }
+
+                function _onEditError() {
+                    console.log("could not update");
+                }
+
+                function _readStatus() {
+                    vm.email = {
+                        "subject": vm.subject,
+                        "body": vm.message
+                    };
+                    swal({
+                        title: "Send Emails",
+                        text: "Are you sure you want to send invites to all selected visitors?",
+                        type: "warning",
+                        showCancelButton: true,
+                        //confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Yes, send emails!",
+                        closeOnConfirm: false
+                    },
+  function(){
+      swal("Sent", "Emails have sent!", "success");
+      var visitors = vm.items;
+      for (var i = 0; i<visitors.length; i++) {
+          var v = visitors[i];
+          if (v.wantsUpdates == true)
+          {
+              vm.openHouseService.sendUpdate(v, vm.house, vm.email, _onSendUpdateSuccess, _onSendUpdateError);
+          }
+      }
+  });
+                }
+
+                function _onSendUpdateSuccess() {
+                    console.log("sent property update");
+                   
+                    vm.notify(function () {
+                        vm.subject = null;
+                        vm.message = null;
+                    });
+                }
+
+                function _onSendUpdateError() {
+                    console.log("could not send property update");
+                }
+
+                function _print() {
+                    window.print();
+                }
+
+                function _goToFlyer() {
+                    window.location.href= '@Model.BaseUrl' + "/agents/" + sabio.page.agentId + "/openhouses/" + sabio.page.openHouseId + "/flyer";
+                }
+
+                function _visitorFilter(value, index, array) {
+                    var resultArray = [];
+                    if (!vm.searchVisitor) {
+                        return true;
+                    }
+                    switch (vm.select.pick) {
+                        case "visitorLastName" :
+                            if (value.visitorLastName.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
+                                return true;
+                            }
+                            break;
+
+                        case "visitorEmail" :
+                            if (value.visitorEmail.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
+                                return true;
+                            }
+                            break;
+                        case "streetAddress" :
+                            if (value.streetAddress.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
+                                return true;
+                            }
+                            break;
+                        case "hostLastName" :
+                            if (value.hostLastName.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
+                                return true;
+                            }
+                            break;
+                        default:
+                            return true;
+                            break;
+                    }
+                    return false;
+                }
+            }
+        })();
+
+        // telephone filter
+        angular.module(APPNAME).filter('tel', function () {
+            return function (tel) {
+                if (!tel) { return ''; }
+
+                var value = tel.toString().trim().replace(/^\+/, '');
+
+                if (value.match(/[^0-9]/)) {
+                    return tel;
+                }
+
+                var country, city, number;
+
+                switch (value.length) {
+                    case 10: // +1PPP####### -> C (PPP) ###-####
+                        country = 1;
+                        city = value.slice(0, 3);
+                        number = value.slice(3);
+                        break;
+
+                    case 11: // +CPPP####### -> CCC (PP) ###-####
+                        country = value[0];
+                        city = value.slice(1, 4);
+                        number = value.slice(4);
+                        break;
+
+                    case 12: // +CCCPP####### -> CCC (PP) ###-####
+                        country = value.slice(0, 3);
+                        city = value.slice(3, 5);
+                        number = value.slice(5);
+                        break;
+
+                    default:
+                        return tel;
+                }
+
+                if (country == 1) {
+                    country = "";
+                }
+
+                number = number.slice(0, 3) + '-' + number.slice(3);
+
+                return (country + " (" + city + ") " + number).trim();
+            };
+        });
+
+        function parseDate(input) {
+            var parts = input.split('-');
+            return new Date(parts[2], parts[1]-1, parts[0]);
+        }
+
+        angular.module(APPNAME).filter("myfilter", function() {
+            return function(items, from, to) {
+                var df = parseDate(from);
+                var dt = parseDate(to);
+                var result = [];
+                for (var i=0; i<items.length; i++){
+                    var tf = new Date(items[i].date1 * 1000),
+                        tt = new Date(items[i].date2 * 1000);
+                    if (tf > df && tt < dt)  {
+                        result.push(items[i]);
+                    }
+                }
+                return result;
+            };
+        })
+
+        //double date filter
+        angular.module(APPNAME).filter("dateFilter", function() {
+            return function datefilter(inputArray, startDate, endDate) {
+                var out = [];
+                if (startDate == undefined) {
+                    return inputArray;
+                }
+                for(var i=0; i<inputArray.length; i++) {
+                    if((startDate < inputArray[i].date) && (endDate > inputArray[i].date)) {
+                        out.push(inputArray[i]);
+                    }
+                }
+                return out;
+                if (startDate == null) {
+                    return inputArray;
+                }
+            };
+        });
+
+        //time filter
+        angular.module(APPNAME).filter('formatTime', function ($filter) {
+            return function (time) {
+                if(time) {
+                    var parts = time.split(':');
+                    var date = new Date(0, 0, 0, parts[0], parts[1], parts[2]);
+                    return $filter('date')(date, 'h:mm a');
+                }
+            };
+        });
+
+
+    </script>
+
+}
+
+
