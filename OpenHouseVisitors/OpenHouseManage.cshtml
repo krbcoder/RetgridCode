@@ -222,6 +222,7 @@
 
     <script type="text/javascript">
 
+        //service
         (function () {
             "use strict";
             sabio.page.agentId = @Html.RawJson(Model.Item[0].Value);
@@ -236,6 +237,7 @@
             }
         })();
 
+        //controller
         (function () {
             "use strict";
             angular.module(APPNAME).controller('openHouseController', OpenHouseController);
@@ -267,6 +269,7 @@
                 vm.message = '';
                 vm.email = {};
 
+                //render 
                 render();
                 function render() {
                     vm.openHouseService.getVisitorsByOpenHouseId (sabio.page.openHouseId, _onGetVisitorsSuccess, _onGetVisitorsError);
@@ -296,7 +299,8 @@
                 function _onGetOpenHouseError() {
                     console.log("could not get house");
                 }
-
+                
+                //edit visitor
                 function _edit(item) {
                     vm.openHouseService.editVisitor(item, _onEditSuccess, _onEditError);
                 }
@@ -309,6 +313,7 @@
                     console.log("could not update");
                 }
 
+                //send update email
                 function _readStatus() {
                     vm.email = {
                         "subject": vm.subject,
@@ -319,26 +324,25 @@
                         text: "Are you sure you want to send invites to all selected visitors?",
                         type: "warning",
                         showCancelButton: true,
-                        //confirmButtonColor: "#DD6B55",
                         confirmButtonText: "Yes, send emails!",
                         closeOnConfirm: false
                     },
-  function(){
-      swal("Sent", "Emails have sent!", "success");
-      var visitors = vm.items;
-      for (var i = 0; i<visitors.length; i++) {
-          var v = visitors[i];
-          if (v.wantsUpdates == true)
-          {
-              vm.openHouseService.sendUpdate(v, vm.house, vm.email, _onSendUpdateSuccess, _onSendUpdateError);
-          }
-      }
-  });
+                function(){
+                    swal("Sent", "Emails have sent!", "success");
+                    var visitors = vm.items;
+                    for (var i = 0; i<visitors.length; i++) {
+                        var v = visitors[i];
+                        if (v.wantsUpdates == true)
+                        {
+                            vm.openHouseService.sendUpdate(v, vm.house, vm.email, _onSendUpdateSuccess, _onSendUpdateError);
+                        }
+                    }
+                });
                 }
 
                 function _onSendUpdateSuccess() {
                     console.log("sent property update");
-                   
+
                     vm.notify(function () {
                         vm.subject = null;
                         vm.message = null;
@@ -349,46 +353,14 @@
                     console.log("could not send property update");
                 }
 
+                // print QR Code
                 function _print() {
                     window.print();
                 }
 
+                //navigate to flyer view
                 function _goToFlyer() {
                     window.location.href= '@Model.BaseUrl' + "/agents/" + sabio.page.agentId + "/openhouses/" + sabio.page.openHouseId + "/flyer";
-                }
-
-                function _visitorFilter(value, index, array) {
-                    var resultArray = [];
-                    if (!vm.searchVisitor) {
-                        return true;
-                    }
-                    switch (vm.select.pick) {
-                        case "visitorLastName" :
-                            if (value.visitorLastName.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
-                                return true;
-                            }
-                            break;
-
-                        case "visitorEmail" :
-                            if (value.visitorEmail.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
-                                return true;
-                            }
-                            break;
-                        case "streetAddress" :
-                            if (value.streetAddress.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
-                                return true;
-                            }
-                            break;
-                        case "hostLastName" :
-                            if (value.hostLastName.toUpperCase().includes(vm.searchVisitor.toUpperCase())) {
-                                return true;
-                            }
-                            break;
-                        default:
-                            return true;
-                            break;
-                    }
-                    return false;
                 }
             }
         })();
@@ -436,46 +408,6 @@
                 number = number.slice(0, 3) + '-' + number.slice(3);
 
                 return (country + " (" + city + ") " + number).trim();
-            };
-        });
-
-        function parseDate(input) {
-            var parts = input.split('-');
-            return new Date(parts[2], parts[1]-1, parts[0]);
-        }
-
-        angular.module(APPNAME).filter("myfilter", function() {
-            return function(items, from, to) {
-                var df = parseDate(from);
-                var dt = parseDate(to);
-                var result = [];
-                for (var i=0; i<items.length; i++){
-                    var tf = new Date(items[i].date1 * 1000),
-                        tt = new Date(items[i].date2 * 1000);
-                    if (tf > df && tt < dt)  {
-                        result.push(items[i]);
-                    }
-                }
-                return result;
-            };
-        })
-
-        //double date filter
-        angular.module(APPNAME).filter("dateFilter", function() {
-            return function datefilter(inputArray, startDate, endDate) {
-                var out = [];
-                if (startDate == undefined) {
-                    return inputArray;
-                }
-                for(var i=0; i<inputArray.length; i++) {
-                    if((startDate < inputArray[i].date) && (endDate > inputArray[i].date)) {
-                        out.push(inputArray[i]);
-                    }
-                }
-                return out;
-                if (startDate == null) {
-                    return inputArray;
-                }
             };
         });
 

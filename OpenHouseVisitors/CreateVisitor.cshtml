@@ -109,26 +109,6 @@
     </div>
 </section>
 
-@*<footer id="footer" class="sticky">
-    <div class="container">
-        <div class="row">
-    <div class="thumbnail text-center col-md-3">
-        <img src="assets/images/demo/people/460x700/8-min.jpg" alt="" />
-        <h2 class="size-18 margin-top-10 margin-bottom-0">Felica Doe</h2>
-        <h3 class="size-11 margin-top-0 margin-bottom-10 text-muted">DEVELOPER</h3>
-    </div>
-
-    <ul class="side-nav list-group col-md-3" id="sidebar-nav">
-        <li class="list-group-item active"><a href="page-profile.html"><i class="fa fa-eye"></i> PROFILE</a></li>
-        <li class="list-group-item"><a href="page-profile-projects.html"><i class="fa fa-tasks"></i> PROJECTS</a></li>
-        <li class="list-group-item"><a href="page-profile-comments.html"><i class="fa fa-comments-o"></i> COMMENTS</a></li>
-        <li class="list-group-item"><a href="page-profile-history.html"><i class="fa fa-history"></i> HISTORY</a></li>
-        <li class="list-group-item"><a href="page-profile-settings.html"><i class="fa fa-gears"></i> SETTINGS</a></li>
-    </ul>
-            </div>
-</div>
-</footer>*@
-
 
 @section scripts{
 <script src="~/Scripts/sabio.services.openHouse.js"></script>
@@ -186,6 +166,7 @@
                 vm.data.openHouseId = sabio.page.currentId;
                 vm.item = {};
 
+                //render
                 render();
                 function render() {
                     vm.openHouseService.getOpenHouse(sabio.page.currentId, _onOpenHouseSuccess, _onOpenHouseError);
@@ -203,6 +184,7 @@
                     console.log("could not get open house");
                 }
 
+                //submit form
                 function _submitForm(isValid) {
                     event.preventDefault();
                     vm.showVisitorErrors = true;
@@ -213,13 +195,6 @@
                     else {
                         console.log("form submitted with invalid data :(")
                     }
-
-                    //if(vm.frmVisitor.$valid) {
-                    //    vm.openHouseVisitorsService.Post(vm.data, _onPostSuccess, _onPostError);
-                    //}
-                    //else {
-                    //    console.log("invalid data");
-                    //}
                 }
 
                 function _onPostSuccess(data) {
@@ -244,8 +219,6 @@
                     }).then(function () {
                         window.location.href = "@Model.BaseUrl/properties/" + vm.item.listingId;
                     }, function (dismiss) {
-                        // dismiss can be 'cancel', 'overlay',
-                        // 'close', and 'timer'
                         if (dismiss === 'cancel') {
                             window.location.href = "@Model.BaseUrl";
                         }
